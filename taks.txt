@@ -1,0 +1,9 @@
+API login
+API absensi (masuk | keluar)
+API list santri halaqoh
+API absensi halaqoh santri
+CRUD santri & musrif
+
+
+Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
+
