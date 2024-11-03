@@ -33,15 +33,21 @@ export class AbsenSantriController {
 
   @Post('create')
   async createAbsen() {
-    var createResult = await this.absenSantriService.createBulk();
-    var deletResult = await this.absenSantriService.removeOldRecords();
+    return this.absenSantriService.createBulk();
+    // var createResult = await this.absenSantriService.createBulk();
+    // var deletResult = await this.absenSantriService.removeOldRecords();
 
-    return { create: createResult, delete: deletResult };
+    // return { create: createResult, delete: deletResult };
   }
 
   @Get('list')
   async list(@Pagination() query: FindAllAbsenSantriDto) {
     return this.absenSantriService.findAll(query);
+  }
+
+  @Get('list/admin')
+  async listAdmin(@Pagination() query: FindAllAbsenSantriDto) {
+    return this.absenSantriService.findAllAdmin(query);
   }
 
   @Get('find/:id')

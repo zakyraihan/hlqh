@@ -4,6 +4,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  Scope,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, Like, Repository } from 'typeorm';
@@ -23,7 +24,7 @@ import BaseResponse from 'src/utils/response/base.response';
 import { Exception } from 'handlebars';
 import { Cron } from '@nestjs/schedule';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class AbsenSantriService extends BaseResponse {
   constructor(
     @InjectRepository(AbsenSantri)
@@ -49,14 +50,13 @@ export class AbsenSantriService extends BaseResponse {
     });
 
     console.log(`Old records deleted: ${result.affected} rows`);
-    // return this._success(
-    //   `Old records deleted: ${result.affected} rows`,
-    //   result,
-    // );
+    return this._success(
+      `Old records deleted: ${result.affected} rows`,
+      result,
+    );
   }
 
-  async createBulk() // payload: CreateAbsenSantriArrayDto,
-  : Promise<ResponseSuccess> {
+  async createBulk(): Promise<ResponseSuccess> {
     try {
       let berhasil = 0;
       let gagal = 0;
@@ -287,5 +287,76 @@ export class AbsenSantriService extends BaseResponse {
     const result = await this.absenSantriRepository.delete(id);
 
     return this._success('Berhasil Menghapus Absen', result);
+  }
+
+  async findAllAdmin(
+    query: FindAllAbsenSantriDto,
+  ): Promise<ResponsePagination> {
+    const { page, pageSize, limit, nama_santri, kelas } = query;
+
+    const filterQuery: any = {
+      created_by: {
+        role: this.req.user.role == 'admin',
+      },
+      // pengampuh: {
+      //   id: this.req.user.id,
+      // },
+    };
+
+    if (nama_santri) {
+      filterQuery.nama_santri = Like(`%${nama_santri}%`);
+    }
+    if (kelas) {
+      filterQuery.kelas = Like(`%${kelas}%`);
+    }
+
+    const total = await this.absenSantriRepository.count({
+      where: filterQuery,
+    });
+    const result = await this.absenSantriRepository.find({
+      where: filterQuery,
+      relations: ['created_by', 'updated_by', 'santri', 'pengampuh'],
+      select: {
+        id: true,
+        santri: {
+          id: true,
+          nama_santri: true,
+          kelas: true,
+        },
+
+        pengampuh: {
+          id: true,
+          nama: true,
+        },
+        dariSurat: true,
+        sampaiSurat: true,
+        dariAyat: true,
+        sampaiAyat: true,
+        status: true,
+        keterangan: true,
+        created_at: true,
+        // updated_at: true,
+        created_by: {
+          id: true,
+          nama: true,
+        },
+        updated_by: {
+          id: true,
+          nama: true,
+        },
+      },
+      order: {
+        created_at: 'DESC',
+      },
+      skip: limit,
+      take: pageSize,
+    });
+    return this._pagination(
+      'berhasil mendapatkan seluruh list absen santri',
+      result,
+      total,
+      page,
+      pageSize,
+    );
   }
 }

@@ -9,10 +9,11 @@ import { AbsenMusrifModule } from './app/absen-musrif/absen-musrif.module';
 import { SantriHalaqohModule } from './app/santri/santri.module';
 import { AbsenSantriModule } from './app/absen-santri/absen-santri.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { AbsenSantriService } from './app/absen-santri/absen-santri.service';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
+    
     ConfigModule.forRoot({
       isGlobal: true,
     }),
