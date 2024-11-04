@@ -63,6 +63,7 @@ export class SantriHalaqohService extends BaseResponse {
         // pilih data mana saja yang akan ditampilkan dari tabel kategori
         id: true,
         nama_santri: true,
+        kelas: true,
         pengampuh: {
           id: true,
           nama: true,
