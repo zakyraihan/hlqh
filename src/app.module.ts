@@ -10,6 +10,8 @@ import { SantriHalaqohModule } from './app/santri/santri.module';
 import { AbsenSantriModule } from './app/absen-santri/absen-santri.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AbsenSantriService } from './app/absen-santri/absen-santri.service';
+import { MusrifModule } from './app/musrif/musrif.module';
+import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { AbsenSantriService } from './app/absen-santri/absen-santri.service';
     AbsenMusrifModule,
     SantriHalaqohModule,
     AbsenSantriModule,
+    MusrifModule,
+    RoleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -23,6 +23,7 @@ import { REQUEST } from '@nestjs/core';
 import BaseResponse from 'src/utils/response/base.response';
 import { Exception } from 'handlebars';
 import { Cron } from '@nestjs/schedule';
+import { MusrifEntity } from '../musrif/musrif.entity';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class AbsenSantriService extends BaseResponse {
@@ -33,27 +34,15 @@ export class AbsenSantriService extends BaseResponse {
     @InjectRepository(SantriHalaqoh)
     private readonly santriRepository: Repository<SantriHalaqoh>,
 
+    // @InjectRepository(MusrifEntity)
+    // private readonly musrifRepository: Repository<MusrifEntity>,
+
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
 
     @Inject(REQUEST) private req: any,
   ) {
     super();
-  }
-
-  @Cron('0 0 * * *')
-  async removeOldRecords() {
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000); // 24 hours ago
-
-    const result = await this.absenSantriRepository.delete({
-      created_at: LessThan(twentyFourHoursAgo),
-    });
-
-    console.log(`Old records deleted: ${result.affected} rows`);
-    return this._success(
-      `Old records deleted: ${result.affected} rows`,
-      result,
-    );
   }
 
   async createBulk(): Promise<ResponseSuccess> {
@@ -63,7 +52,7 @@ export class AbsenSantriService extends BaseResponse {
 
       const santris = await this.santriRepository.find({
         relations: {
-          pengampuh: true,
+          musrif: true,
           created_by: true,
         },
         select: {
@@ -73,10 +62,9 @@ export class AbsenSantriService extends BaseResponse {
           created_by: {
             id: this.req.user.id,
           },
-          pengampuh: {
+          musrif: {
             id: true,
-            nama: true,
-            email: true,
+            nama_musrif: true,
           },
         },
       });
@@ -86,7 +74,7 @@ export class AbsenSantriService extends BaseResponse {
         santris.map(async (santri) => {
           const dataSave = {
             santri: { id: santri.id },
-            pengampuh: { id: santri.pengampuh.id },
+            pengampuh: { id: santri.musrif.id },
             dariSurat: null,
             sampaiSurat: null,
             dariAyat: null,
@@ -94,7 +82,6 @@ export class AbsenSantriService extends BaseResponse {
             status: AbsenStatus.TIDAK_HADIR,
             keterangan: null,
             created_by: { id: this.req.user.id },
-            // created_at: new Date(),
           };
 
           await this.absenSantriRepository.save(dataSave);
@@ -108,26 +95,6 @@ export class AbsenSantriService extends BaseResponse {
         }),
       );
 
-      // await Promise.all(
-      //   payload.data.map(async (data) => {
-      //     const dataSave = {
-      //       ...data,
-      //       santri: { id: data.santri },
-      //       pengampuh: { id: data.pengampuh },
-      //       created_by: { id: data.pengampuh },
-      //     };
-
-      //     try {
-      //       await this.absenSantriRepository.save(dataSave);
-
-      //       berhasil += 1;
-      //     } catch (err) {
-      //       console.log('err', err);
-      //       gagal += 1;
-      //     }
-      //   }),
-      // );
-
       return this._success(`Berhasil menyimpan ${berhasil} dan gagal ${gagal}`);
     } catch (err) {
       console.log('err', err);
@@ -136,20 +103,10 @@ export class AbsenSantriService extends BaseResponse {
   }
 
   async findAll(query: FindAllAbsenSantriDto): Promise<ResponsePagination> {
-    const {
-      page,
-      pageSize,
-      limit,
-
-      nama_santri,
-      kelas,
-    } = query;
+    const { page, pageSize, limit, nama_santri, kelas } = query;
 
     const filterQuery: any = {
       created_by: {
-        id: this.req.user.id,
-      },
-      pengampuh: {
         id: this.req.user.id,
       },
     };
@@ -177,7 +134,7 @@ export class AbsenSantriService extends BaseResponse {
 
         pengampuh: {
           id: true,
-          nama: true,
+          nama_musrif: true,
         },
         dariSurat: true,
         sampaiSurat: true,
@@ -186,14 +143,14 @@ export class AbsenSantriService extends BaseResponse {
         status: true,
         keterangan: true,
         created_at: true,
-        // updated_at: true,
+        updated_at: true,
         created_by: {
           id: true,
           nama: true,
         },
         updated_by: {
           id: true,
-          nama: true,
+          nama_musrif: true,
         },
       },
       order: {
@@ -266,7 +223,7 @@ export class AbsenSantriService extends BaseResponse {
       },
       pengampuh: {
         id: absen.pengampuh.id,
-        nama: absen.pengampuh.nama,
+        nama: absen.pengampuh.nama_musrif,
       },
     };
 
@@ -281,7 +238,7 @@ export class AbsenSantriService extends BaseResponse {
     });
 
     if (!chek) {
-      throw new NotFoundException(`Buku dengan id ${id} tidak ditemukan`);
+      throw new NotFoundException(`absen dengan id ${id} tidak ditemukan`);
     }
 
     const result = await this.absenSantriRepository.delete(id);
@@ -323,10 +280,9 @@ export class AbsenSantriService extends BaseResponse {
           nama_santri: true,
           kelas: true,
         },
-
         pengampuh: {
           id: true,
-          nama: true,
+          nama_musrif: true,
         },
         dariSurat: true,
         sampaiSurat: true,
@@ -335,14 +291,14 @@ export class AbsenSantriService extends BaseResponse {
         status: true,
         keterangan: true,
         created_at: true,
-        // updated_at: true,
+        updated_at: true,
         created_by: {
           id: true,
           nama: true,
         },
         updated_by: {
           id: true,
-          nama: true,
+          nama_musrif: true,
         },
       },
       order: {

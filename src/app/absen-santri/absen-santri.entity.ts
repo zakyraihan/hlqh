@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { SantriHalaqoh } from '../santri/santri.entity';
 import { User } from '../auth/auth.entity';
+import { MusrifEntity } from '../musrif/musrif.entity';
 
 export enum AbsenStatus {
   HADIR = 'HADIR',
@@ -23,43 +24,43 @@ export class AbsenSantri extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => SantriHalaqoh) // Allow null for santri
+  @ManyToOne(() => SantriHalaqoh)
   @JoinColumn({ name: 'nama_santri' })
   santri: SantriHalaqoh;
 
-  @ManyToOne(() => User, { nullable: false }) // Allow null for pengampuh
+  @ManyToOne(() => MusrifEntity, { nullable: false })
   @JoinColumn({ name: 'pengampuh_id' })
-  pengampuh: User;
+  pengampuh: MusrifEntity;
 
-  @Column({ nullable: true }) // Allow null for dariSurat
+  @Column({ nullable: true })
   dariSurat: string;
 
-  @Column({ nullable: true }) // Allow null for sampaiSurat
+  @Column({ nullable: true })
   sampaiSurat: string;
 
-  @Column({ nullable: true }) // Allow null for dariAyat
+  @Column({ nullable: true })
   dariAyat: number;
 
-  @Column({ nullable: true }) // Allow null for sampaiAyat
+  @Column({ nullable: true })
   sampaiAyat: number;
 
   @Column({
     type: 'enum',
     enum: AbsenStatus,
-    default: AbsenStatus.HADIR, // Default value (optional)
+    default: AbsenStatus.HADIR,
   })
   status: AbsenStatus;
 
-  @Column({ nullable: true }) // Allow null for keterangan
+  @Column({ nullable: true })
   keterangan: string;
 
-  @ManyToOne(() => User, { nullable: true }) // Allow null for created_by
+  @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'created_by' })
   created_by: User;
 
-  @ManyToOne(() => User, { nullable: true }) // Allow null for updated_by
+  @ManyToOne(() => MusrifEntity, { nullable: true })
   @JoinColumn({ name: 'updated_by' })
-  updated_by: User;
+  updated_by: MusrifEntity;
 
   @Column({
     type: 'datetime',

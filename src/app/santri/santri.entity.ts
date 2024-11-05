@@ -9,6 +9,7 @@ import {
   BaseEntity,
 } from 'typeorm';
 import { User } from '../auth/auth.entity';
+import { MusrifEntity } from '../musrif/musrif.entity';
 
 @Entity()
 export class SantriHalaqoh extends BaseEntity {
@@ -21,9 +22,9 @@ export class SantriHalaqoh extends BaseEntity {
   @Column({ nullable: false })
   kelas: number;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'pengampuh' })
-  pengampuh: User;
+  @ManyToOne(() => MusrifEntity)
+  @JoinColumn({ name: 'pengampuh_id' })
+  musrif: MusrifEntity;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'created_by' })

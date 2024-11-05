@@ -1,9 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { SantriHalaqoh } from './santri.entity';
-import { CreateSantriHalaqohDto, findAllSantriHalaqohDto } from './santri.dto';
+import {
+  CreateSantriHalaqohDto,
+  findAllSantriHalaqohDto,
+  UpdateSantriHalaqohDto,
+} from './santri.dto';
 import BaseResponse from 'src/utils/response/base.response';
 import { REQUEST } from '@nestjs/core';
 import { ResponsePagination, ResponseSuccess } from 'src/interface/response';
@@ -22,8 +32,8 @@ export class SantriHalaqohService extends BaseResponse {
     try {
       await this.santriHalaqohRepository.save({
         ...payload,
-        pengampuh: {
-          id: this.req.user.id,
+        musrif: {
+          id: payload.musrif_id,
         },
         created_by: {
           id: this.req.user.id,
@@ -47,6 +57,9 @@ export class SantriHalaqohService extends BaseResponse {
       created_by: {
         id: this.req.user.id,
       },
+      // musrif: {
+      //   id: this.req.user.id,
+      // },
     };
 
     if (nama_santri) {
@@ -58,22 +71,21 @@ export class SantriHalaqohService extends BaseResponse {
 
     const result = await this.santriHalaqohRepository.find({
       where: filterQuery,
-      relations: ['pengampuh', 'created_by', 'updated_by'], // relasi yang aka ditampilkan saat menampilkan list kategori
+      relations: ['musrif', 'created_by', 'updated_by'],
       select: {
-        // pilih data mana saja yang akan ditampilkan dari tabel kategori
         id: true,
         nama_santri: true,
         kelas: true,
-        pengampuh: {
+        musrif: {
+          id: true,
+          nama_musrif: true,
+        },
+        created_by: {
           id: true,
           nama: true,
         },
-        created_by: {
-          id: true, // pilih field  yang akan ditampilkan dari tabel user
-          nama: true,
-        },
         updated_by: {
-          id: true, // pilih field yang akan ditampilkan dari tabel user
+          id: true,
           nama: true,
         },
       },
@@ -82,5 +94,47 @@ export class SantriHalaqohService extends BaseResponse {
     });
 
     return this._pagination('OK', result, total, page, pageSize);
+  }
+
+  async update(
+    id: number,
+    payload: UpdateSantriHalaqohDto,
+  ): Promise<ResponseSuccess> {
+    const check = await this.santriHalaqohRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!check)
+      throw new NotFoundException(`anggota deengan id ${id} tidak ditemukan`);
+
+    const update = await this.santriHalaqohRepository.save({
+      ...payload,
+      id: id,
+      musrif: {
+        id: payload.musrif_id,
+      },
+      updated_by: {
+        id: this.req.user.id,
+      },
+    });
+
+    return this._success('Berhasil MengUpdate Data', update);
+  }
+
+  async delete(id: number): Promise<ResponseSuccess> {
+    const check = await this.santriHalaqohRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!check)
+      throw new NotFoundException(`anggota  dengan id ${id} tidak ditemukan`);
+
+    await this.santriHalaqohRepository.delete(id);
+
+    return this._success('Berhasil Menghapus');
   }
 }

@@ -26,18 +26,9 @@ import { JwtGuard } from '../auth/auth.guard';
 export class AbsenSantriController {
   constructor(private readonly absenSantriService: AbsenSantriService) {}
 
-  @Post('test-delete-old-records')
-  async testDeleteOldRecords() {
-    return this.absenSantriService.removeOldRecords()
-  }
-
   @Post('create')
   async createAbsen() {
     return this.absenSantriService.createBulk();
-    // var createResult = await this.absenSantriService.createBulk();
-    // var deletResult = await this.absenSantriService.removeOldRecords();
-
-    // return { create: createResult, delete: deletResult };
   }
 
   @Get('list')
