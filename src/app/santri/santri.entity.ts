@@ -22,7 +22,7 @@ export class SantriHalaqoh extends BaseEntity {
   @Column({ nullable: false })
   kelas: number;
 
-  @ManyToOne(() => MusrifEntity)
+  @ManyToOne(() => MusrifEntity, {onDelete: 'NO ACTION'})
   @JoinColumn({ name: 'pengampuh_id' })
   musrif: MusrifEntity;
 

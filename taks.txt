@@ -7,3 +7,8 @@ CRUD santri & musrif
 
 Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
 
+- detail santri 
+- buat API post : yang apa bila di jalankan akan menyimpan absensi halaqah santri dengan data null, di tanggal hari itu 
+- role admin
+- CRUD musrif 
+- samakan
