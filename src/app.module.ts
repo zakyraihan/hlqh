@@ -15,7 +15,6 @@ import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
-    
     ConfigModule.forRoot({
       isGlobal: true,
     }),

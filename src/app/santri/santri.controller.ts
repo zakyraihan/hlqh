@@ -35,6 +35,11 @@ export class SantriHalaqohController {
     return this.santriService.getAllSantri(query);
   }
 
+  @Get('detail/:id')
+  async getSantriDetail(@Param('id') id: number) {
+    return this.santriService.getSantriDetail(id);
+  }
+
   @Put('update/:id')
   async updateSantri(
     @Param('id') id: string,
