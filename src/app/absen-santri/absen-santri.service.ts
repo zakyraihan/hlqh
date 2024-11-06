@@ -131,7 +131,6 @@ export class AbsenSantriService extends BaseResponse {
           nama_santri: true,
           kelas: true,
         },
-
         pengampuh: {
           id: true,
           nama_musrif: true,
@@ -150,7 +149,7 @@ export class AbsenSantriService extends BaseResponse {
         },
         updated_by: {
           id: true,
-          nama_musrif: true,
+          nama: true,
         },
       },
       order: {
@@ -298,7 +297,7 @@ export class AbsenSantriService extends BaseResponse {
         },
         updated_by: {
           id: true,
-          nama_musrif: true,
+          nama: true,
         },
       },
       order: {

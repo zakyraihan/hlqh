@@ -58,9 +58,9 @@ export class AbsenSantri extends BaseEntity {
   @JoinColumn({ name: 'created_by' })
   created_by: User;
 
-  @ManyToOne(() => MusrifEntity, { nullable: true })
+  @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'updated_by' })
-  updated_by: MusrifEntity;
+  updated_by: User;
 
   @Column({
     type: 'datetime',
