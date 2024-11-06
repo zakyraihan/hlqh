@@ -14,6 +14,7 @@ import {
   CreateAbsenSantriDto,
   FindAllAbsenSantriDto,
   UpdateAbsenSantriDto,
+  UpdateAbsenSantriDtoAdmin,
 } from './absen-santri.dto';
 import { SantriHalaqoh } from '../santri/santri.entity';
 import { User } from '../auth/auth.entity';
@@ -186,6 +187,37 @@ export class AbsenSantriService extends BaseResponse {
     const result = await this.absenSantriRepository.save({
       ...UpdateAbsenSantriDto,
       id: id,
+      updated_by: {
+        id: this.req.user.id,
+      },
+      updated_at: new Date(),
+    });
+
+    return this._success('berhasil update absen', result);
+  }
+
+  async updateAdmin(
+    id: number,
+    UpdateAbsenSantriDtoAdmin: UpdateAbsenSantriDtoAdmin,
+  ): Promise<ResponseSuccess> {
+    const check = await this.absenSantriRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!check) {
+      throw new NotFoundException(
+        `absen santri deengan id ${id} tidak ditemukan`,
+      );
+    }
+
+    const result = await this.absenSantriRepository.save({
+      ...UpdateAbsenSantriDtoAdmin,
+      id: id,
+      pengampuh: {
+        id: UpdateAbsenSantriDtoAdmin.pengampuh,
+      },
       updated_by: {
         id: this.req.user.id,
       },

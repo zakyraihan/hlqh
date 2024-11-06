@@ -16,6 +16,7 @@ import {
   CreateAbsenSantriDto,
   FindAllAbsenSantriDto,
   UpdateAbsenSantriDto,
+  UpdateAbsenSantriDtoAdmin,
 } from './absen-santri.dto';
 import { AbsenSantri } from './absen-santri.entity';
 import { Pagination } from 'src/utils/decorator/pagination-decorator';
@@ -52,6 +53,14 @@ export class AbsenSantriController {
     @Body() updateAbsenSantriDto: UpdateAbsenSantriDto,
   ) {
     return this.absenSantriService.update(Number(id), updateAbsenSantriDto);
+  }
+
+  @Put('updateAdmin/:id')
+  async updateAdmin(
+    @Param('id') id: string,
+    @Body() updateAbsenSantriDto: UpdateAbsenSantriDtoAdmin,
+  ) {
+    return this.absenSantriService.updateAdmin(Number(id), updateAbsenSantriDto);
   }
 
   @Delete('delete/:id')

@@ -11,7 +11,7 @@ import {
   IsDate,
 } from 'class-validator';
 import { AbsenStatus } from './absen-santri.entity';
-import { OmitType } from '@nestjs/mapped-types';
+import { OmitType, PickType } from '@nestjs/mapped-types';
 import { PageRequestDto } from 'src/utils/page dto/page.dto';
 import { Type } from 'class-transformer';
 
@@ -73,6 +73,9 @@ export class UpdateAbsenSantriDto extends OmitType(AbsenSantri, [
   'id',
   'santri',
   'pengampuh',
+]) {}
+export class UpdateAbsenSantriDtoAdmin extends PickType(AbsenSantri, [
+  'pengampuh'
 ]) {}
 
 export class CreateAbsenSantriDto extends OmitType(AbsenSantri, ['id']) {}
