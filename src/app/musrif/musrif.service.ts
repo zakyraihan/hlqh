@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   HttpException,
   HttpStatus,
@@ -112,5 +113,30 @@ export class MusrifService extends BaseResponse {
     await this.musrifRepository.delete(id);
 
     return this._success('Berhasil menghapus Data Musrif');
+  }
+
+  async detail(id: number): Promise<ResponseSuccess> {
+    const musrif = await this.musrifRepository.findOne({
+      where: { id },
+      relations: ['created_by'], // Include any necessary relations
+      select: {
+        id: true,
+        nama_musrif: true,
+        created_by: {
+          id: true,
+          nama: true,
+        },
+        created_at: true,
+        ...(this.musrifRepository.metadata.columns.some(
+          (column) => column.propertyName === 'updated_at',
+        ) && { updated_at: true }),
+      },
+    });
+
+    if (!musrif) {
+      throw new NotFoundException(`Musrif dengan id ${id} tidak ditemukan`);
+    }
+
+    return this._success('Berhasil mendapatkan detail Musrif', musrif);
   }
 }
