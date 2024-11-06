@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Controller,
   Post,
@@ -34,8 +35,8 @@ export class AbsenMusrifController {
     return this.absenMusrifService.absenKeluar(createAbsenKeluarDto);
   }
 
-  @Get('list')
-  async listAbsenMusrif(@Pagination() query: findAllAbsenMusrifDto) {
-    return this.absenMusrifService.getAllAbsen(query);
-  }
+  // @Get('list')
+  // async listAbsenMusrif(@Pagination() query: findAllAbsenMusrifDto) {
+  //   return this.absenMusrifService.getAllAbsen(query);
+  // }
 }
