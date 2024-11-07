@@ -28,12 +28,18 @@ export class MusrifController {
   async listMusrif(@Pagination() query: FindAllMusrif) {
     return this.musrifService.getAll(query);
   }
+
   @Put('update/:id')
   async updateMusrif(
     @Param('id') id: string,
     @InjectUpdatedBy() payload: UpdateMusrifDto,
   ) {
     return this.musrifService.update(Number(id), payload);
+  }
+
+  @Get('detail/:id')
+  async detailMusrif(@Param('id') id: string) {
+    return this.musrifService.detail(Number(id));
   }
 
   @Delete('delete/:id')

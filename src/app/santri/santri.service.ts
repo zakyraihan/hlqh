@@ -140,10 +140,18 @@ export class SantriHalaqohService extends BaseResponse {
 
   async getSantriDetail(id: number): Promise<ResponseSuccess> {
     try {
-      // Cek apakah data santri dengan ID yang diberikan ada
+      // Find the santri by ID with related musrif details
       const santri = await this.santriHalaqohRepository.findOne({
-        where: {
-          id,
+        where: { id },
+        relations: ['musrif'], // Include musrif relation
+        select: {
+          id: true,
+          nama_santri: true,
+          kelas: true,
+          musrif: {
+            id: true,
+            nama_musrif: true,
+          },
         },
       });
 
