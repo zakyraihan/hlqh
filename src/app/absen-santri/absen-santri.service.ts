@@ -126,7 +126,7 @@ export class AbsenSantriService extends BaseResponse {
     });
     const result = await this.absenSantriRepository.find({
       where: filterQuery,
-      relations: ['created_by', 'updated_by', 'santri', 'pengampuh'],
+      relations: ['created_by', 'updated_by', 'santri'],
       select: {
         id: true,
         santri: {
