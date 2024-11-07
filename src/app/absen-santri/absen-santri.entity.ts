@@ -28,9 +28,9 @@ export class AbsenSantri extends BaseEntity {
   @JoinColumn({ name: 'nama_santri' })
   santri: SantriHalaqoh;
 
-  @ManyToOne(() => MusrifEntity, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'pengampuh_id' })
-  pengampuh: MusrifEntity;
+  // @ManyToOne(() => MusrifEntity, { nullable: true, onDelete: 'SET NULL' })
+  // @JoinColumn({ name: 'pengampuh_id' })
+  // pengampuh: MusrifEntity;
 
   @Column({ nullable: true })
   dariSurat: string;

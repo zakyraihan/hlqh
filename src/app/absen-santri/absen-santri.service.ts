@@ -75,7 +75,7 @@ export class AbsenSantriService extends BaseResponse {
         santris.map(async (santri) => {
           const dataSave = {
             santri: { id: santri.id },
-            pengampuh: { id: santri.musrif.id },
+            // pengampuh: { id: santri.musrif.id },
             dariSurat: null,
             sampaiSurat: null,
             dariAyat: null,
@@ -84,6 +84,8 @@ export class AbsenSantriService extends BaseResponse {
             keterangan: null,
             created_by: { id: this.req.user.id },
           };
+
+          console.log(dataSave)
 
           await this.absenSantriRepository.save(dataSave);
           berhasil += 1;
@@ -132,10 +134,10 @@ export class AbsenSantriService extends BaseResponse {
           nama_santri: true,
           kelas: true,
         },
-        pengampuh: {
-          id: true,
-          nama_musrif: true,
-        },
+        // pengampuh: {
+        //   id: true,
+        //   nama_musrif: true,
+        // },
         dariSurat: true,
         sampaiSurat: true,
         dariAyat: true,
@@ -252,10 +254,10 @@ export class AbsenSantriService extends BaseResponse {
         nama_santri: absen.santri.nama_santri,
         kelas: absen.santri.kelas,
       },
-      pengampuh: {
-        id: absen.pengampuh.id,
-        nama: absen.pengampuh.nama_musrif,
-      },
+      // pengampuh: {
+      //   id: absen.pengampuh.id,
+      //   nama: absen.pengampuh.nama_musrif,
+      // },
     };
 
     return this._success('berhasil mendapatkan detail', result);
@@ -311,10 +313,10 @@ export class AbsenSantriService extends BaseResponse {
           nama_santri: true,
           kelas: true,
         },
-        pengampuh: {
-          id: true,
-          nama_musrif: true,
-        },
+        // pengampuh: {
+        //   id: true,
+        //   nama_musrif: true,
+        // },
         dariSurat: true,
         sampaiSurat: true,
         dariAyat: true,
