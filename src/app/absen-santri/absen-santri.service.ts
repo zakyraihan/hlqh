@@ -232,7 +232,7 @@ export class AbsenSantriService extends BaseResponse {
   async findOne(id: number): Promise<ResponseSuccess> {
     const absen = await this.absenSantriRepository.findOne({
       where: { id },
-      relations: ['santri', 'pengampuh'],
+      relations: ['santri'],
     });
 
     if (!absen) {
