@@ -85,7 +85,7 @@ export class AbsenSantriService extends BaseResponse {
             created_by: { id: this.req.user.id },
           };
 
-          console.log(dataSave)
+          console.log(dataSave);
 
           await this.absenSantriRepository.save(dataSave);
           berhasil += 1;
@@ -106,7 +106,7 @@ export class AbsenSantriService extends BaseResponse {
   }
 
   async findAll(query: FindAllAbsenSantriDto): Promise<ResponsePagination> {
-    const { page, pageSize, limit, nama_santri, kelas } = query;
+    const { page, pageSize, limit, santri, kelas } = query;
 
     const filterQuery: any = {
       created_by: {
@@ -114,11 +114,14 @@ export class AbsenSantriService extends BaseResponse {
       },
     };
 
-    if (nama_santri) {
-      filterQuery.nama_santri = Like(`%${nama_santri}%`);
-    }
     if (kelas) {
       filterQuery.kelas = Like(`%${kelas}%`);
+    }
+
+    if(santri) {
+      filterQuery.santri = {
+        id: santri,
+      }
     }
 
     const total = await this.absenSantriRepository.count({
@@ -282,7 +285,7 @@ export class AbsenSantriService extends BaseResponse {
   async findAllAdmin(
     query: FindAllAbsenSantriDto,
   ): Promise<ResponsePagination> {
-    const { page, pageSize, limit, nama_santri, kelas } = query;
+    const { page, pageSize, limit, kelas } = query;
 
     const filterQuery: any = {
       created_by: {
@@ -293,9 +296,7 @@ export class AbsenSantriService extends BaseResponse {
       // },
     };
 
-    if (nama_santri) {
-      filterQuery.nama_santri = Like(`%${nama_santri}%`);
-    }
+   
     if (kelas) {
       filterQuery.kelas = Like(`%${kelas}%`);
     }

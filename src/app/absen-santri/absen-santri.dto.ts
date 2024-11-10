@@ -90,7 +90,7 @@ export class CreateAbsenSantriArrayDto {
 export class FindAllAbsenSantriDto extends PageRequestDto {
   @IsString()
   @IsOptional()
-  nama_santri: string;
+  santri: string;
 
   @IsNumber()
   @IsOptional()
