@@ -45,4 +45,8 @@ export class findAllSantriHalaqohDto extends PageRequestDto {
   @IsString()
   @IsOptional()
   nama_santri: string;
+
+  @IsInt()
+  @IsOptional()
+  musrif_id: number;
 }

@@ -17,6 +17,7 @@ import {
 import BaseResponse from 'src/utils/response/base.response';
 import { REQUEST } from '@nestjs/core';
 import { ResponsePagination, ResponseSuccess } from 'src/interface/response';
+import { filter } from 'rxjs';
 
 @Injectable()
 export class SantriHalaqohService extends BaseResponse {
@@ -51,20 +52,24 @@ export class SantriHalaqohService extends BaseResponse {
   async getAllSantri(
     query: findAllSantriHalaqohDto,
   ): Promise<ResponsePagination> {
-    const { page, pageSize, limit, nama_santri } = query;
+    const { page, pageSize, limit, nama_santri,musrif_id } = query;
 
     const filterQuery: any = {
       created_by: {
         id: this.req.user.id,
       },
-      // musrif: {
-      //   id: this.req.user.id,
-      // },
     };
 
     if (nama_santri) {
       filterQuery.nama_santri = Like(`%${nama_santri}%`);
     }
+   
+    if(musrif_id) {
+      filterQuery.musrif = {
+        id: musrif_id,
+      }
+    }
+
     const total = await this.santriHalaqohRepository.count({
       where: filterQuery,
     });
