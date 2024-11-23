@@ -8,7 +8,13 @@ import {
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository, MoreThanOrEqual, LessThanOrEqual, Like } from 'typeorm';
+import {
+  Repository,
+  MoreThanOrEqual,
+  LessThanOrEqual,
+  Like,
+  Between,
+} from 'typeorm';
 import { AbsensiMusrif } from './absen-musrif.entity';
 import BaseResponse from 'src/utils/response/base.response';
 import { ResponsePagination, ResponseSuccess } from 'src/interface/response';
@@ -27,14 +33,38 @@ export class AbsenMusrifService extends BaseResponse {
   ) {
     super();
   }
+
   // Absen Masuk (Clock-In)
-  async absenMasuk(
-    payload: CreateAbsenMusrifMasukDto,
-  ): Promise<ResponseSuccess> {
+  async absenMasuk(): Promise<ResponseSuccess> {
     try {
+      // Get the current date (without time) to check for existing entries on the same day
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Set time to midnight for comparison
+
+      const existingEntry = await this.absensiRepository.findOne({
+        where: {
+          nama: {
+            id: this.req.user.id,
+          },
+          tanggal_masuk: Between(
+            today,
+            new Date(today.getTime() + 24 * 60 * 60 * 1000),
+          ),
+        },
+      });
+
+      if (existingEntry) {
+        return {
+          status: 'Error',
+          message: 'Anda sudah absen masuk hari ini',
+        };
+      }
+
+      // Create a new clock-in entry
       const newEntry = await this.absensiRepository.save({
-        ...payload,
-        nama: this.req.user.id,
+        nama: {
+          id: this.req.user.id,
+        },
         hadir: true,
         shift: 'halaqoh',
         tanggal_masuk: new Date(), // Auto-set current date and time
@@ -49,8 +79,35 @@ export class AbsenMusrifService extends BaseResponse {
     }
   }
 
+  async findAllAbsensi(): Promise<ResponseSuccess> {
+    const get = await this.absensiRepository.find({
+      relations: ['nama'],
+      select: {
+        nama: {
+          id: true,
+          nama: true,
+          email: true,
+          role: true,
+          avatar: true,
+        },
+        tanggal_masuk: true,
+        hadir: true,
+        shift: true,
+        tanggal_keluar: true,
+      },
+    });
+
+    return {
+      status: 'ok',
+      message: 'Berhasil mendapatkan List Absen',
+      data: get,
+    };
+  }
+
   // Absen Keluar (Clock-Out)
   async absenKeluar(payload: CreateAbsenKeluarDto): Promise<ResponseSuccess> {
+    const date = new Date().toLocaleString();
+
     try {
       const absenRecord = await this.absensiRepository.findOne({
         where: { id: payload.id },
@@ -58,6 +115,13 @@ export class AbsenMusrifService extends BaseResponse {
 
       if (!absenRecord) {
         throw new HttpException('Record tidak ditemukan', HttpStatus.NOT_FOUND);
+      }
+
+      if (absenRecord.tanggal_keluar) {
+        return {
+          status: 'Error',
+          message: 'Anda sudah absen keluar hari ini',
+        };
       }
 
       absenRecord.tanggal_keluar = new Date();

@@ -17,6 +17,7 @@ async function bootstrap() {
     }),
   );
   app.enableCors();
+  console.log(new Date().toLocaleDateString())
   await app.listen(2001);
 }
 bootstrap();

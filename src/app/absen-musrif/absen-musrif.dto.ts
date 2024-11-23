@@ -36,6 +36,7 @@ export class CreateAbsenMusrifMasukDto extends OmitType(absenMusrifDto, [
   'hadir',
   'tanggal_masuk',
 ]) {}
+
 export class CreateAbsenKeluarDto {
   @IsInt()
   id: number;

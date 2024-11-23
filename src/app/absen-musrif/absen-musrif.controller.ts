@@ -26,8 +26,13 @@ export class AbsenMusrifController {
   constructor(private readonly absenMusrifService: AbsenMusrifService) {}
 
   @Post('masuk')
-  async absenMasuk(@Body() createAbsenMasukDto: CreateAbsenMusrifMasukDto) {
-    return this.absenMusrifService.absenMasuk(createAbsenMasukDto);
+  async absenMasuk() {
+    return this.absenMusrifService.absenMasuk();
+  }
+
+  @Get('getAll')
+  async get() {
+    return this.absenMusrifService.findAllAbsensi();
   }
 
   @Post('keluar')
