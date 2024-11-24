@@ -154,6 +154,7 @@ export class AbsenSantriService extends BaseResponse {
         namaMusrif: true,
         sampaiSurat: true,
         dariAyat: true,
+        tipe: true,
         sampaiAyat: true,
         status: true,
         keterangan: true,
