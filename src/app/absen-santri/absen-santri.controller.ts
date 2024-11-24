@@ -28,8 +28,8 @@ export class AbsenSantriController {
   constructor(private readonly absenSantriService: AbsenSantriService) {}
 
   @Post('create')
-  async createAbsen() {
-    return this.absenSantriService.createBulk();
+  async createAbsen(@Body() body: CreateAbsenSantriDto) {
+    return this.absenSantriService.createBulk(body);
   }
 
   @Get('list')

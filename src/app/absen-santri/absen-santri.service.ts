@@ -46,7 +46,7 @@ export class AbsenSantriService extends BaseResponse {
     super();
   }
 
-  async createBulk(): Promise<ResponseSuccess> {
+  async createBulk(body : CreateAbsenSantriDto): Promise<ResponseSuccess> {
     try {
       let berhasil = 0;
       let gagal = 0;
@@ -76,11 +76,13 @@ export class AbsenSantriService extends BaseResponse {
           const dataSave = {
             santri: { id: santri.id },
             // pengampuh: { id: santri.musrif.id },
+            namaMusrif: santri.musrif?.nama_musrif,
             dariSurat: null,
             sampaiSurat: null,
             dariAyat: null,
             sampaiAyat: null,
             status: AbsenStatus.TIDAK_HADIR,
+            tipe: body.tipe,
             keterangan: null,
             created_by: { id: this.req.user.id },
           };
@@ -148,11 +150,8 @@ export class AbsenSantriService extends BaseResponse {
           nama_santri: true,
           kelas: true,
         },
-        // pengampuh: {
-        //   id: true,
-        //   nama_musrif: true,
-        // },
         dariSurat: true,
+        namaMusrif: true,
         sampaiSurat: true,
         dariAyat: true,
         sampaiAyat: true,

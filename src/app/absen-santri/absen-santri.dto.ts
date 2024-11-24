@@ -10,7 +10,7 @@ import {
   IsObject,
   IsDate,
 } from 'class-validator';
-import { AbsenStatus } from './absen-santri.entity';
+import { AbsenStatus, TipeAbsen } from './absen-santri.entity';
 import { OmitType, PickType } from '@nestjs/mapped-types';
 import { PageRequestDto } from 'src/utils/page dto/page.dto';
 import { Type } from 'class-transformer';
@@ -78,7 +78,11 @@ export class UpdateAbsenSantriDtoAdmin extends PickType(AbsenSantri, [
   'pengampuh'
 ]) {}
 
-export class CreateAbsenSantriDto extends OmitType(AbsenSantri, ['id']) {}
+export class CreateAbsenSantriDto {
+  @IsEnum(TipeAbsen)
+  @IsString()
+  tipe : TipeAbsen
+}
 
 export class CreateAbsenSantriArrayDto {
   @IsArray()

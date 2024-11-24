@@ -19,6 +19,11 @@ export enum AbsenStatus {
   ALPHA = 'ALPHA',
 }
 
+export enum TipeAbsen {
+  PAGI = "pagi",
+  SORE = "sore"
+}
+
 @Entity()
 export class AbsenSantri extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -28,12 +33,11 @@ export class AbsenSantri extends BaseEntity {
   @JoinColumn({ name: 'nama_santri' })
   santri: SantriHalaqoh;
 
-  // @ManyToOne(() => MusrifEntity, { nullable: true, onDelete: 'SET NULL' })
-  // @JoinColumn({ name: 'pengampuh_id' })
-  // pengampuh: MusrifEntity;
-
   @Column({ nullable: true })
   dariSurat: string;
+
+  @Column({ nullable: true })
+  namaMusrif: string;
 
   @Column({ nullable: true })
   sampaiSurat: string;
@@ -50,6 +54,12 @@ export class AbsenSantri extends BaseEntity {
     default: AbsenStatus.HADIR,
   })
   status: AbsenStatus;
+  @Column({
+    type: 'enum',
+    enum: TipeAbsen,
+    default: TipeAbsen.PAGI,
+  })
+  tipe: TipeAbsen;
 
   @Column({ nullable: true })
   keterangan: string;
