@@ -7,7 +7,7 @@ import {
   Scope,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThan, Like, Repository } from 'typeorm';
+import { Between, LessThan, Like, Repository } from 'typeorm';
 import { AbsenSantri, AbsenStatus } from './absen-santri.entity';
 import {
   CreateAbsenSantriArrayDto,
@@ -106,7 +106,7 @@ export class AbsenSantriService extends BaseResponse {
   }
 
   async findAll(query: FindAllAbsenSantriDto): Promise<ResponsePagination> {
-    const { page, pageSize, limit, santri, kelas } = query;
+    const { page, pageSize, limit, santri, kelas, created_at } = query;
 
     const filterQuery: any = {
       created_by: {
@@ -118,11 +118,22 @@ export class AbsenSantriService extends BaseResponse {
       filterQuery.kelas = Like(`%${kelas}%`);
     }
 
-    if(santri) {
+    if (santri) {
       filterQuery.santri = {
         id: santri,
-      }
+      };
     }
+
+    if (created_at) {
+      const startOfDay = new Date(created_at);
+      startOfDay.setHours(0, 0, 0, 0);
+    
+      const endOfDay = new Date(created_at);
+      endOfDay.setHours(23, 59, 59, 999);
+    
+      filterQuery.created_at = Between(startOfDay, endOfDay);
+    }
+    
 
     const total = await this.absenSantriRepository.count({
       where: filterQuery,
@@ -296,7 +307,6 @@ export class AbsenSantriService extends BaseResponse {
       // },
     };
 
-   
     if (kelas) {
       filterQuery.kelas = Like(`%${kelas}%`);
     }
