@@ -83,6 +83,7 @@ export class AbsenMusrifService extends BaseResponse {
     const get = await this.absensiRepository.find({
       relations: ['nama'],
       select: {
+        id: true,
         nama: {
           id: true,
           nama: true,
