@@ -46,7 +46,7 @@ export class AbsenSantriService extends BaseResponse {
     super();
   }
 
-  async createBulk(body : CreateAbsenSantriDto): Promise<ResponseSuccess> {
+  async createBulk(body: CreateAbsenSantriDto): Promise<ResponseSuccess> {
     try {
       let berhasil = 0;
       let gagal = 0;
@@ -129,13 +129,12 @@ export class AbsenSantriService extends BaseResponse {
     if (created_at) {
       const startOfDay = new Date(created_at);
       startOfDay.setHours(0, 0, 0, 0);
-    
+
       const endOfDay = new Date(created_at);
       endOfDay.setHours(23, 59, 59, 999);
-    
+
       filterQuery.created_at = Between(startOfDay, endOfDay);
     }
-    
 
     const total = await this.absenSantriRepository.count({
       where: filterQuery,
