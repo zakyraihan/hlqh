@@ -73,6 +73,9 @@ export class AbsenSantriService extends BaseResponse {
 
       await Promise.all(
         santris.map(async (santri) => {
+          if (santri.musrif == null) {
+            return;
+          }
           const dataSave = {
             santri: { id: santri.id },
             // pengampuh: { id: santri.musrif.id },
@@ -128,10 +131,12 @@ export class AbsenSantriService extends BaseResponse {
 
     if (created_at) {
       const startOfDay = new Date(created_at);
-      startOfDay.setHours(0, 0, 0, 0);
+      console.log(startOfDay);
+      startOfDay.setUTCHours(0, 0, 0, 0);
 
       const endOfDay = new Date(created_at);
-      endOfDay.setHours(23, 59, 59, 999);
+      endOfDay.setUTCHours(23, 59, 59, 999);
+      console.log(startOfDay, endOfDay);
 
       filterQuery.created_at = Between(startOfDay, endOfDay);
     }
