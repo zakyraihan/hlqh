@@ -95,13 +95,16 @@ export class FindAllAbsenSantriDto extends PageRequestDto {
   @IsString()
   @IsOptional()
   santri: string;
+  @IsString()
+  @IsOptional()
+  created_at: string;
 
   @IsNumber()
   @IsOptional()
   kelas: number;
 
-  @IsOptional()
-  @Type(() => Date)
-  @IsDate()
-  created_at: Date; 
+  // @IsOptional()
+  // // @Type(() => Date)
+  // // @IsDate()
+  // created_at: Date; 
 }
