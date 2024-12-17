@@ -73,7 +73,7 @@ export class AbsenSantri extends BaseEntity {
   updated_by: User;
 
   @Column({
-    type: 'datetime',
+    type: 'timestamp',
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
   })

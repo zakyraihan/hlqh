@@ -131,12 +131,13 @@ export class AbsenSantriService extends BaseResponse {
   
     if (created_at) {
       const startOfDay = new Date(created_at);
-      startOfDay.setUTCHours(0, 0, 0, 0);
+      startOfDay.setHours(0, 0, 0, 1);
   
       const endOfDay = new Date(created_at);
-      endOfDay.setUTCHours(23, 59, 59, 999);
+      endOfDay.setHours(23, 59, 59, 999);
   
       filterQuery.created_at = Between(startOfDay, endOfDay);
+      console.log(startOfDay, endOfDay);
     }
   
     // Tambahkan filter berdasarkan namaMusrif
