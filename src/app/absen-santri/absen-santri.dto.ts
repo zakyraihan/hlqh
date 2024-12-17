@@ -99,9 +99,15 @@ export class FindAllAbsenSantriDto extends PageRequestDto {
   @IsOptional()
   created_at: string;
 
+  @IsString()
+  @IsOptional()
+  namaMusrif: string;
+
   @IsNumber()
   @IsOptional()
   kelas: number;
+
+
 
   // @IsOptional()
   // // @Type(() => Date)

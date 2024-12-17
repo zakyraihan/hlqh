@@ -111,39 +111,43 @@ export class AbsenSantriService extends BaseResponse {
   }
 
   async findAll(query: FindAllAbsenSantriDto): Promise<ResponsePagination> {
-    const { page, pageSize, limit, santri, kelas, created_at } = query;
-
+    const { page, pageSize, limit, santri, kelas, created_at, namaMusrif } = query;
+  
     const filterQuery: any = {
       created_by: {
         id: this.req.user.id,
       },
     };
-
+  
     if (kelas) {
       filterQuery.kelas = Like(`%${kelas}%`);
     }
-
+  
     if (santri) {
       filterQuery.santri = {
         id: santri,
       };
     }
-
+  
     if (created_at) {
       const startOfDay = new Date(created_at);
-      console.log(startOfDay);
       startOfDay.setUTCHours(0, 0, 0, 0);
-
+  
       const endOfDay = new Date(created_at);
       endOfDay.setUTCHours(23, 59, 59, 999);
-      console.log(startOfDay, endOfDay);
-
+  
       filterQuery.created_at = Between(startOfDay, endOfDay);
     }
-
+  
+    // Tambahkan filter berdasarkan namaMusrif
+    if (namaMusrif) {
+      filterQuery.namaMusrif = Like(`%${namaMusrif}%`);
+    }
+  
     const total = await this.absenSantriRepository.count({
       where: filterQuery,
     });
+  
     const result = await this.absenSantriRepository.find({
       where: filterQuery,
       relations: ['created_by', 'updated_by', 'santri'],
@@ -155,7 +159,7 @@ export class AbsenSantriService extends BaseResponse {
           kelas: true,
         },
         dariSurat: true,
-        namaMusrif: true,
+        namaMusrif: true, // Pastikan properti ini ditampilkan
         sampaiSurat: true,
         dariAyat: true,
         tipe: true,
@@ -179,6 +183,7 @@ export class AbsenSantriService extends BaseResponse {
       skip: limit,
       take: pageSize,
     });
+  
     return this._pagination(
       'berhasil mendapatkan list absen santri',
       result,
@@ -187,6 +192,7 @@ export class AbsenSantriService extends BaseResponse {
       pageSize,
     );
   }
+  
 
   async update(
     id: number,
